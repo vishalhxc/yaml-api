@@ -20,6 +20,7 @@ repositories {
 dependencies {
     fun String.version(): String = properties["dependency.version.$this"].toString()
     implementation("io.ktor:ktor-client-serialization:${"ktor".version()}")
+    implementation("io.ktor:ktor-client-cio:${"ktor".version()}")
     implementation("ch.qos.logback:logback-classic:${"logback".version()}")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${"kotlinx".version()}")
     implementation("org.snakeyaml:snakeyaml-engine:${"snakeyaml".version()}")

@@ -5,13 +5,13 @@ import io.ktor.http.*
 
 data class GokapioRequest(
     val name: String,
-    val method: HttpMethod?,
+    val method: HttpMethod,
     val url: String,
     val headers: Map<String, String>?,
     val body: String
 ) {
     fun validate(): Unit = mutableListOf<String>().let { errors ->
-        if (method == null) errors.add("method")
+        if (method.value.isBlank()) errors.add("method")
         if (url.isBlank()) errors.add("url")
         if (errors.isNotEmpty())
             throw InvalidRequestException(

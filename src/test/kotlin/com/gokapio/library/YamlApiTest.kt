@@ -2,6 +2,10 @@ package com.gokapio.library
 
 import com.gokapio.library.error.YamlParserException
 import com.gokapio.library.model.GokapioRequest
+import com.gokapio.library.yaml.merge
+import com.gokapio.library.yaml.parseYaml
+import com.gokapio.library.yaml.toGokapioRequest
+import com.gokapio.library.yaml.toHttpMethod
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -42,9 +46,14 @@ body: >-
         )
     }
 
-    test("parse yaml, reader has valid yaml - wrong fields, return missing fields exception") {
-        shouldThrow<YamlParserException> { parseYaml(StringReader("abc: 123")) }
-            .also { it.message shouldBe "Property 'method' is missing." }
+    test("parse yaml, reader has valid yaml - wrong fields, return blank request") {
+        parseYaml(StringReader("abc: 123")) shouldBe GokapioRequest(
+            name = "",
+            method = HttpMethod(""),
+            url = "",
+            headers = null,
+            body = ""
+        )
     }
 
     test("parse yaml, yaml not valid, throw yaml exception") {
@@ -100,7 +109,7 @@ body: >-
         )
     }
 
-    test("to request, no headers - maps to values and returns request") {
+    test("to request, no headers - maps to null and returns request") {
         mapOf(
             "name" to "request-name",
             "method" to "get",
@@ -115,22 +124,40 @@ body: >-
         )
     }
 
-    test("to request, missing method maps to null and returns request") {
+    test("to request, invalid headers - throws exception") {
+        shouldThrow<YamlParserException> {
             mapOf(
+                "name" to "request-name",
+                "method" to "get",
                 "url" to "http://localhost",
-                "method" to "put",
-                "headers" to mapOf(
-                    "content-type" to "application/json",
-                    "custom-header" to "custom-value"
-                ),
+                "headers" to "something-thats-not-a-map",
                 "body" to " { \"field\": \"value\", \"numeric\": 30 } "
             ).toGokapioRequest() shouldBe GokapioRequest(
                 name = "request-name",
-                method = HttpMethod.Put,
+                method = HttpMethod.Get,
                 url = "http://localhost",
                 headers = null,
                 body = """ { "field": "value", "numeric": 30 } """
             )
+        }.also { it.message shouldBe "Unable to parse headers." }
+    }
+
+    test("to request, missing method maps to empty and returns request") {
+        mapOf(
+            "url" to "http://localhost",
+            "headers" to listOf(
+                mapOf("content-type" to "application/json"),
+                mapOf("custom-header" to "custom-value")
+            ),
+            "body" to " { \"field\": \"value\", \"numeric\": 30 } "
+        ).toGokapioRequest() shouldBe GokapioRequest(
+            name = "",
+            method = HttpMethod(""),
+            url = "http://localhost",
+            headers = mapOf("content-type" to "application/json", "custom-header" to "custom-value"),
+            body = """ { "field": "value", "numeric": 30 } """
+        )
+    }
 
     test("to request, missing body maps to blank") {
         mapOf(
@@ -153,20 +180,19 @@ body: >-
         )
     }
 
-        test("to request, missing headers maps to null") {
-            mapOf(
-                "name" to "request-name",
-                "method" to "get",
-                "url" to "http://localhost",
-                "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-            ).toGokapioRequest() shouldBe GokapioRequest(
-                name = "request-name",
-                method = HttpMethod.Get,
-                url = "http://localhost",
-                headers = null,
-                body = """ { "field": "value", "numeric": 30 } """
-            )
-        }
+    test("to request, missing headers maps to null") {
+        mapOf(
+            "name" to "request-name",
+            "method" to "get",
+            "url" to "http://localhost",
+            "body" to " { \"field\": \"value\", \"numeric\": 30 } "
+        ).toGokapioRequest() shouldBe GokapioRequest(
+            name = "request-name",
+            method = HttpMethod.Get,
+            url = "http://localhost",
+            headers = null,
+            body = """ { "field": "value", "numeric": 30 } """
+        )
     }
 
     test("to http method, 'GET' returns Get method") {

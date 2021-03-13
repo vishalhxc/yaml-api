@@ -19,7 +19,7 @@ internal class GokapioRequestTest : FunSpec({
 
     test("validate, method null - throw invalid request exception") {
         shouldThrow<InvalidRequestException> {
-            GokapioRequest("name", null, "url", mapOf("header" to "value"), "body")
+            GokapioRequest("name", HttpMethod(""), "url", mapOf("header" to "value"), "body")
                 .validate()
         }.also { it.message shouldBe "Property value(s) [method] are missing." }
     }
@@ -33,7 +33,7 @@ internal class GokapioRequestTest : FunSpec({
 
     test("validate, all blank or null - throw exception for method and url") {
         shouldThrow<InvalidRequestException> {
-            GokapioRequest("", null, "", null, "")
+            GokapioRequest("", HttpMethod(""), "", null, "")
                 .validate()
         }.also { it.message shouldBe "Property value(s) [method, url] are missing." }
     }
