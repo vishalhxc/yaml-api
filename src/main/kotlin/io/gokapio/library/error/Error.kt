@@ -1,4 +1,4 @@
-package com.gokapio.library.error
+package io.gokapio.library.error
 
 abstract class GokapioException(
     override val message: String?,

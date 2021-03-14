@@ -7,7 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "1.4.30"
 }
 
-group "org.gokapio"
+group "io.gokapio"
 version "0.0.1"
 
 repositories {
@@ -18,16 +18,17 @@ repositories {
 }
 
 dependencies {
-    fun String.version(): String = properties["dependency.version.$this"].toString()
-    implementation("io.ktor:ktor-client-serialization:${"ktor".version()}")
-    implementation("io.ktor:ktor-client-cio:${"ktor".version()}")
-    implementation("ch.qos.logback:logback-classic:${"logback".version()}")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${"kotlinx".version()}")
-    implementation("org.snakeyaml:snakeyaml-engine:${"snakeyaml".version()}")
-    testImplementation("io.kotest:kotest-runner-junit5:${"kotest".version()}")
-    testImplementation("io.kotest:kotest-assertions-core:${"kotest".version()}")
-    testImplementation("io.kotest:kotest-property:${"kotest".version()}")
-    testImplementation("io.mockk:mockk:${"mockk".version()}")
+    fun versionOf(name: String): String = properties["dependency.version.$name"].toString()
+    implementation("io.ktor:ktor-client-serialization:${versionOf("ktor")}")
+    implementation("io.ktor:ktor-client-cio:${versionOf("ktor")}")
+    implementation("ch.qos.logback:logback-classic:${versionOf("logback")}")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${versionOf("kotlinx")}")
+    implementation("org.snakeyaml:snakeyaml-engine:${versionOf("snakeyaml")}")
+    testImplementation("io.kotest:kotest-runner-junit5:${versionOf("kotest")}")
+    testImplementation("io.kotest:kotest-assertions-core:${versionOf("kotest")}")
+    testImplementation("io.kotest:kotest-property:${versionOf("kotest")}")
+    testImplementation("io.mockk:mockk:${versionOf("mockk")}")
+    testImplementation("io.ktor:ktor-client-mock:${versionOf("ktor")}")
 }
 
 tasks {

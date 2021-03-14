@@ -1,11 +1,11 @@
-package com.gokapio.library
+package io.gokapio.library
 
-import com.gokapio.library.error.YamlParserException
-import com.gokapio.library.model.GokapioRequest
-import com.gokapio.library.yaml.merge
-import com.gokapio.library.yaml.parseYaml
-import com.gokapio.library.yaml.toGokapioRequest
-import com.gokapio.library.yaml.toHttpMethod
+import io.gokapio.library.error.YamlParserException
+import io.gokapio.library.model.YamlApiRequest
+import io.gokapio.library.yaml.merge
+import io.gokapio.library.yaml.parseYaml
+import io.gokapio.library.yaml.toGokapioRequest
+import io.gokapio.library.yaml.toHttpMethod
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -31,7 +31,7 @@ body: >-
   }
 """.trimIndent()
             )
-        ) shouldBe GokapioRequest(
+        ) shouldBe YamlApiRequest(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -47,7 +47,7 @@ body: >-
     }
 
     test("parse yaml, reader has valid yaml - wrong fields, return blank request") {
-        parseYaml(StringReader("abc: 123")) shouldBe GokapioRequest(
+        parseYaml(StringReader("abc: 123")) shouldBe YamlApiRequest(
             name = "",
             method = HttpMethod(""),
             url = "",
@@ -76,7 +76,7 @@ body: >-
                 mapOf("custom-header" to "custom-value")
             ),
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe GokapioRequest(
+        ).toGokapioRequest() shouldBe YamlApiRequest(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -97,7 +97,7 @@ body: >-
                 mapOf("custom-header" to "custom-value")
             ),
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe GokapioRequest(
+        ).toGokapioRequest() shouldBe YamlApiRequest(
             name = "",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -115,7 +115,7 @@ body: >-
             "method" to "get",
             "url" to "http://localhost",
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe GokapioRequest(
+        ).toGokapioRequest() shouldBe YamlApiRequest(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -132,7 +132,7 @@ body: >-
                 "url" to "http://localhost",
                 "headers" to "something-thats-not-a-map",
                 "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-            ).toGokapioRequest() shouldBe GokapioRequest(
+            ).toGokapioRequest() shouldBe YamlApiRequest(
                 name = "request-name",
                 method = HttpMethod.Get,
                 url = "http://localhost",
@@ -150,7 +150,7 @@ body: >-
                 mapOf("custom-header" to "custom-value")
             ),
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe GokapioRequest(
+        ).toGokapioRequest() shouldBe YamlApiRequest(
             name = "",
             method = HttpMethod(""),
             url = "http://localhost",
@@ -168,7 +168,7 @@ body: >-
                 mapOf("content-type" to "application/json"),
                 mapOf("custom-header" to "custom-value")
             ),
-        ).toGokapioRequest() shouldBe GokapioRequest(
+        ).toGokapioRequest() shouldBe YamlApiRequest(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -186,7 +186,7 @@ body: >-
             "method" to "get",
             "url" to "http://localhost",
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe GokapioRequest(
+        ).toGokapioRequest() shouldBe YamlApiRequest(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
