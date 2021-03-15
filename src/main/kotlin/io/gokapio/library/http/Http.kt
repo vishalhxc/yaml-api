@@ -19,16 +19,16 @@ import kotlin.coroutines.CoroutineContext
 
 suspend fun sendHttpRequest(request: YamlApiRequest, client: HttpClient = HttpClient()): YamlApiResponse =
     try {
-        client.request<HttpResponse>(request.url) {
+        client.request(request.url) {
             method = request.method
             body = request.body
             request.headers?.map { header(it.key, it.value) }
-        }.let { YamlApiResponse(it.status.value, it.status.description, it.readText(), it.headers.toListOfMap()) }
+        }
     } catch (ex: Exception) {
         if (ex !is ResponseException)
             throw HttpException("Unhandled exception on request.", ex)
-        else with(ex.response) { YamlApiResponse(status.value, status.description, readText(), headers.toListOfMap()) }
-    }
+        else ex.response
+    }.run { YamlApiResponse(status.value, status.description, readText(), headers.toListOfMap()) }
 
 internal fun Headers.toListOfMap(): List<Map<String, String>> =
     this.toMap().map { mapOf(it.key to it.value.joinToString(separator = "; ")) }

@@ -6,6 +6,7 @@ import io.gokapio.library.model.YamlApiResponse
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
@@ -164,8 +165,7 @@ internal class HttpTest : FunSpec({
         )
     }
 
-    test("send http request, url with spaces, throw http exception with cause") {
-        TODO("fix this")
+    test("send http request, unreachable url, throw http exception with cause") {
         shouldThrow<HttpException> {
             sendHttpRequest(
                 request = YamlApiRequest(
@@ -174,15 +174,12 @@ internal class HttpTest : FunSpec({
                     url = "http: // local host",
                     headers = emptyMap(),
                     body = ""
-                ),
-                client = mockClientWithResponse(
-                    "",
-                    HttpStatusCode.TemporaryRedirect,
-                    headersOf()
                 )
             )
-        }.also { it.message shouldBe "Unhandled exception on request."
-        it.cause shouldBe Exception("")}
+        }.also {
+            it.message shouldBe "Unhandled exception on request."
+            it.cause shouldNotBe null
+        }
     }
 
     test("to list of map, map of string/list, returns flattened") {
