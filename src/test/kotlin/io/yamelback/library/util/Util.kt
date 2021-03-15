@@ -19,8 +19,7 @@ internal fun constructYamlFile(
     url: String,
     headers: Map<String, String>,
     body: String
-): Reader = StringReader(
-    """
+): Reader = """
 name: $name
 method: $method
 url: $url
@@ -28,5 +27,4 @@ headers:
 ${headers.map { "  - ${it.key}: ${it.value}" }.joinToString(separator = System.lineSeparator())}
 body: >-
   $body
-""".trimIndent()
-)
+""".trimIndent().reader()

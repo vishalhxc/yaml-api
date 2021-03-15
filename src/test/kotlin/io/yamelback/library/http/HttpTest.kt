@@ -169,7 +169,7 @@ internal class HttpTest : FunSpec({
                 )
             )
         }.also {
-            it.message shouldBe "Unhandled exception on request."
+            it.message shouldBe "Could not complete request."
             it.cause shouldNotBe null
         }
     }

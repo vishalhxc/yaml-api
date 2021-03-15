@@ -20,7 +20,7 @@ suspend fun sendHttpRequest(request: HttpCall, client: HttpClient = HttpClient()
         }
     } catch (ex: Exception) {
         if (ex !is ResponseException)
-            throw HttpException("Unhandled exception on request.", ex)
+            throw HttpException("Could not complete request.", ex)
         else ex.response
     }.run { HttpReply(status.value, status.description, readText(), headers.toListOfMap()) }
 

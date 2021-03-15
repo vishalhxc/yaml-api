@@ -1,0 +1,10 @@
+name: invalid-request
+method: get
+url: https://localhost
+headers:
+  - content-type: application/json
+  - accept: application/json
+body: >-
+  {
+    "field": "hello"
+  }

@@ -1,0 +1,7 @@
+name: xkcd-get-comic-1
+method: get
+url: https://xkcd.com/1/info.0.json
+headers:
+  - content-type: application/json
+  - accept: application/json
+body:
