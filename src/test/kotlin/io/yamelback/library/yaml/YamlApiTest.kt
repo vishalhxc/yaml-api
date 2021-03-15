@@ -1,37 +1,29 @@
-package io.gokapio.library
+package io.yamelback.library.yaml
 
-import io.gokapio.library.error.YamlParserException
-import io.gokapio.library.model.YamlApiRequest
-import io.gokapio.library.yaml.merge
-import io.gokapio.library.yaml.parseYaml
-import io.gokapio.library.yaml.toGokapioRequest
-import io.gokapio.library.yaml.toHttpMethod
+import io.yamelback.library.error.YamlParserException
+import io.yamelback.library.http.model.HttpCall
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.ktor.http.*
+import io.yamelback.library.util.constructYamlFile
 import java.io.Reader
 import java.io.StringReader
 
 internal class YamlApiTest : FunSpec({
     test("parse yaml, reader has valid yaml, return request") {
         parseYaml(
-            StringReader(
-                """
-name: request-name
-method: GET
-url: http://localhost
-headers:
-  - content-type: application/json
-  - custom-header: custom-value
-body: >-
-  { 
+            constructYamlFile(
+                name = "request-name",
+                method = "GET",
+                url = "http://localhost",
+                headers = mapOf("content-type" to "application/json", "custom-header" to "custom-value"),
+                body = """{ 
     "field" : "value",
     "numeric" : 30 
-  }
-""".trimIndent()
+  }""".trimIndent()
             )
-        ) shouldBe YamlApiRequest(
+        ) shouldBe HttpCall(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -47,7 +39,7 @@ body: >-
     }
 
     test("parse yaml, reader has valid yaml - wrong fields, return blank request") {
-        parseYaml(StringReader("abc: 123")) shouldBe YamlApiRequest(
+        parseYaml(StringReader("abc: 123")) shouldBe HttpCall(
             name = "",
             method = HttpMethod(""),
             url = "",
@@ -76,7 +68,7 @@ body: >-
                 mapOf("custom-header" to "custom-value")
             ),
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe YamlApiRequest(
+        ).toRequest() shouldBe HttpCall(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -97,7 +89,7 @@ body: >-
                 mapOf("custom-header" to "custom-value")
             ),
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe YamlApiRequest(
+        ).toRequest() shouldBe HttpCall(
             name = "",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -115,7 +107,7 @@ body: >-
             "method" to "get",
             "url" to "http://localhost",
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe YamlApiRequest(
+        ).toRequest() shouldBe HttpCall(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -132,7 +124,7 @@ body: >-
                 "url" to "http://localhost",
                 "headers" to "something-thats-not-a-map",
                 "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-            ).toGokapioRequest() shouldBe YamlApiRequest(
+            ).toRequest() shouldBe HttpCall(
                 name = "request-name",
                 method = HttpMethod.Get,
                 url = "http://localhost",
@@ -150,7 +142,7 @@ body: >-
                 mapOf("custom-header" to "custom-value")
             ),
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe YamlApiRequest(
+        ).toRequest() shouldBe HttpCall(
             name = "",
             method = HttpMethod(""),
             url = "http://localhost",
@@ -168,7 +160,7 @@ body: >-
                 mapOf("content-type" to "application/json"),
                 mapOf("custom-header" to "custom-value")
             ),
-        ).toGokapioRequest() shouldBe YamlApiRequest(
+        ).toRequest() shouldBe HttpCall(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -186,7 +178,7 @@ body: >-
             "method" to "get",
             "url" to "http://localhost",
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toGokapioRequest() shouldBe YamlApiRequest(
+        ).toRequest() shouldBe HttpCall(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",

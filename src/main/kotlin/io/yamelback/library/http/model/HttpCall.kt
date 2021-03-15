@@ -1,9 +1,9 @@
-package io.gokapio.library.model
+package io.yamelback.library.http.model
 
-import io.gokapio.library.error.InvalidRequestException
+import io.yamelback.library.error.InvalidRequestException
 import io.ktor.http.*
 
-data class YamlApiRequest(
+data class HttpCall(
     val name: String,
     val method: HttpMethod,
     val url: String,

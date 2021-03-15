@@ -1,21 +1,21 @@
-package io.gokapio.library.yaml
+package io.yamelback.library.yaml
 
-import io.gokapio.library.error.YamlParserException
-import io.gokapio.library.model.YamlApiRequest
+import io.yamelback.library.error.YamlParserException
+import io.yamelback.library.http.model.HttpCall
 import io.ktor.http.*
 import org.snakeyaml.engine.v2.api.Load
 import org.snakeyaml.engine.v2.api.LoadSettings
 import java.io.Reader
 
-internal fun parseYaml(file: Reader): YamlApiRequest =
-    Load(LoadSettings.builder().build()).loadFromReader(file).let { yaml ->
+internal fun parseYaml(reader: Reader): HttpCall =
+    Load(LoadSettings.builder().build()).loadFromReader(reader).let { yaml ->
         if (yaml == null) throw YamlParserException("File does not exist.")
         if (yaml !is Map<*, *>) throw YamlParserException("Invalid yaml file.")
-        yaml.toGokapioRequest()
+        yaml.toRequest()
     }
 
-internal fun Map<*, *>.toGokapioRequest(): YamlApiRequest =
-    YamlApiRequest(
+internal fun Map<*, *>.toRequest(): HttpCall =
+    HttpCall(
         name = get("name")?.toString() ?: "",
         method = (get("method")?.toString() ?: "").toHttpMethod(),
         url = get("url")?.toString() ?: "",
