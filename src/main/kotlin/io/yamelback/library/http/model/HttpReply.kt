@@ -1,8 +1,6 @@
-package io.gokapio.library.model
+package io.yamelback.library.http.model
 
-import io.ktor.http.*
-
-data class YamlApiResponse(
+data class HttpReply(
     val code: Int,
     val status: String,
     val content: String,

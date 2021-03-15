@@ -1,6 +1,6 @@
-package io.gokapio.library.error
+package io.yamelback.library.error
 
-abstract class GokapioException(
+abstract class YamelbackException(
     override val message: String?,
     override val cause: Throwable?
 ) : Exception(message, cause)
@@ -8,14 +8,14 @@ abstract class GokapioException(
 class YamlParserException(
     override val message: String?,
     override val cause: Throwable? = null
-) : GokapioException(message, cause)
+) : YamelbackException(message, cause)
 
 class InvalidRequestException(
     override val message: String?,
     override val cause: Throwable? = null
-) : GokapioException(message, cause)
+) : YamelbackException(message, cause)
 
 class HttpException(
     override val message: String?,
     override val cause: Throwable? = null
-) : GokapioException(message, cause)
+) : YamelbackException(message, cause)

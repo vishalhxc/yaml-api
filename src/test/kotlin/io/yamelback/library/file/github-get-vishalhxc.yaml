@@ -1,0 +1,6 @@
+name: github-get-vishalhxc
+method: get
+url: https://api.github.com/users/vishalhxc
+headers:
+  - content-type: application/json
+  - accept: application/json

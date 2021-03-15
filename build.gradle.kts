@@ -7,7 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "1.4.30"
 }
 
-group "io.gokapio"
+group "io.yamelback"
 version "0.0.1"
 
 repositories {

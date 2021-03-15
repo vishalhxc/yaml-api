@@ -1,29 +1,21 @@
-package io.gokapio.library.http
+package io.yamelback.library.http
 
-import io.gokapio.library.error.HttpException
-import io.gokapio.library.model.YamlApiRequest
-import io.gokapio.library.model.YamlApiResponse
+import io.yamelback.library.error.HttpException
+import io.yamelback.library.http.model.HttpCall
+import io.yamelback.library.http.model.HttpReply
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.ktor.client.*
-import io.ktor.client.engine.mock.*
 import io.ktor.http.*
+import io.yamelback.library.util.mockClientWithResponse
 
 internal class HttpTest : FunSpec({
-    fun mockClientWithResponse(content: String, status: HttpStatusCode, headers: Headers): HttpClient =
-        HttpClient(MockEngine) {
-            engine {
-                addHandler { respond(content, status, headers) }
-            }
-        }
-
     test("send http request, valid get request, return 200 OK") {
         val responseContent = """ { "eggs": "scrambled", "bread": "toasted" } """
 
         sendHttpRequest(
-            request = YamlApiRequest(
+            request = HttpCall(
                 name = "name",
                 method = HttpMethod.Get,
                 url = "http://localhost",
@@ -38,7 +30,7 @@ internal class HttpTest : FunSpec({
                 HttpStatusCode.OK,
                 headersOf("content-type" to listOf("application/json", "charset=utf-8"))
             )
-        ) shouldBe YamlApiResponse(
+        ) shouldBe HttpReply(
             code = 200,
             status = "OK",
             content = responseContent,
@@ -50,7 +42,7 @@ internal class HttpTest : FunSpec({
         val responseContent = """ { "eggs": "scrambled", "bread": "toasted" } """
 
         sendHttpRequest(
-            request = YamlApiRequest(
+            request = HttpCall(
                 name = "name",
                 method = HttpMethod.Post,
                 url = "http://localhost",
@@ -65,7 +57,7 @@ internal class HttpTest : FunSpec({
                 HttpStatusCode.Created,
                 headersOf("content-type" to listOf("application/json"))
             )
-        ) shouldBe YamlApiResponse(
+        ) shouldBe HttpReply(
             code = 201,
             status = "Created",
             content = responseContent,
@@ -77,7 +69,7 @@ internal class HttpTest : FunSpec({
         val responseContent = """ { "error": "notFound" } """
 
         sendHttpRequest(
-            request = YamlApiRequest(
+            request = HttpCall(
                 name = "name",
                 method = HttpMethod.Delete,
                 url = "http://localhost",
@@ -89,7 +81,7 @@ internal class HttpTest : FunSpec({
                 HttpStatusCode.NotFound,
                 headersOf()
             )
-        ) shouldBe YamlApiResponse(
+        ) shouldBe HttpReply(
             code = 404,
             status = "Not Found",
             content = responseContent,
@@ -101,7 +93,7 @@ internal class HttpTest : FunSpec({
         val responseContent = """ { "error": "server error" } """
 
         sendHttpRequest(
-            request = YamlApiRequest(
+            request = HttpCall(
                 name = "name",
                 method = HttpMethod.Put,
                 url = "http://localhost",
@@ -113,7 +105,7 @@ internal class HttpTest : FunSpec({
                 HttpStatusCode.InternalServerError,
                 headersOf()
             )
-        ) shouldBe YamlApiResponse(
+        ) shouldBe HttpReply(
             code = 500,
             status = "Internal Server Error",
             content = responseContent,
@@ -123,7 +115,7 @@ internal class HttpTest : FunSpec({
 
     test("send http request, informational request, return 100") {
         sendHttpRequest(
-            request = YamlApiRequest(
+            request = HttpCall(
                 name = "name",
                 method = HttpMethod.Put,
                 url = "http://localhost",
@@ -135,7 +127,7 @@ internal class HttpTest : FunSpec({
                 HttpStatusCode.Continue,
                 headersOf()
             )
-        ) shouldBe YamlApiResponse(
+        ) shouldBe HttpReply(
             code = 100,
             status = "Continue",
             content = "",
@@ -145,7 +137,7 @@ internal class HttpTest : FunSpec({
 
     test("send http request, redirect request, return 307") {
         sendHttpRequest(
-            request = YamlApiRequest(
+            request = HttpCall(
                 name = "name",
                 method = HttpMethod.Put,
                 url = "http://localhost",
@@ -157,7 +149,7 @@ internal class HttpTest : FunSpec({
                 HttpStatusCode.TemporaryRedirect,
                 headersOf()
             )
-        ) shouldBe YamlApiResponse(
+        ) shouldBe HttpReply(
             code = 307,
             status = "Temporary Redirect",
             content = "",
@@ -168,7 +160,7 @@ internal class HttpTest : FunSpec({
     test("send http request, unreachable url, throw http exception with cause") {
         shouldThrow<HttpException> {
             sendHttpRequest(
-                request = YamlApiRequest(
+                request = HttpCall(
                     name = "name",
                     method = HttpMethod.Put,
                     url = "http: // local host",
@@ -177,7 +169,7 @@ internal class HttpTest : FunSpec({
                 )
             )
         }.also {
-            it.message shouldBe "Unhandled exception on request."
+            it.message shouldBe "Could not complete request."
             it.cause shouldNotBe null
         }
     }

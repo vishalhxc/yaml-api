@@ -1,0 +1,3 @@
+name: xkcd-get-comic-not-found
+method: get
+url: https://xkcd.com/0/info.0.json

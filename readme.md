@@ -1,4 +1,4 @@
-# gokapio
+# yamelback
 ## JVM library to send http requests from yaml files
 
 ### Sample request format
