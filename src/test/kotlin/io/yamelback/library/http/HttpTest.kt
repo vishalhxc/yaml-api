@@ -12,19 +12,19 @@ import io.yamelback.library.util.mockClientWithResponse
 
 internal class HttpTest : FunSpec({
     test("send http request, valid get request, return 200 OK") {
-        val responseContent = """ { "eggs": "scrambled", "bread": "toasted" } """
-
-        sendHttpRequest(
-            request = HttpCall(
-                name = "name",
-                method = HttpMethod.Get,
-                url = "http://localhost",
-                headers = mapOf(
-                    "accept" to "application/json",
-                    "custom" to "custom-value"
-                ),
-                body = ""
+        val call = HttpCall(
+            name = "name",
+            method = HttpMethod.Get,
+            url = "http://localhost",
+            headers = mapOf(
+                "accept" to "application/json",
+                "custom" to "custom-value"
             ),
+            body = ""
+        )
+        val responseContent = """ { "eggs": "scrambled", "bread": "toasted" } """
+        sendHttpRequest(
+            request = call,
             client = mockClientWithResponse(
                 responseContent,
                 HttpStatusCode.OK,
@@ -34,24 +34,26 @@ internal class HttpTest : FunSpec({
             code = 200,
             status = "OK",
             content = responseContent,
-            headers = listOf(mapOf("content-type" to "application/json; charset=utf-8"))
+            headers = listOf(mapOf("content-type" to "application/json; charset=utf-8")),
+            httpCall = call
         )
     }
 
     test("send http request, valid post request, return 201 Created") {
+        val call = HttpCall(
+            name = "name",
+            method = HttpMethod.Post,
+            url = "http://localhost",
+            headers = mapOf(
+                "accept" to "application/json",
+                "custom" to "custom-value"
+            ),
+            body = """ { "eggs": "scrambled", "bread": "toasted" } """
+        )
         val responseContent = """ { "eggs": "scrambled", "bread": "toasted" } """
 
         sendHttpRequest(
-            request = HttpCall(
-                name = "name",
-                method = HttpMethod.Post,
-                url = "http://localhost",
-                headers = mapOf(
-                    "accept" to "application/json",
-                    "custom" to "custom-value"
-                ),
-                body = """ { "eggs": "scrambled", "bread": "toasted" } """
-            ),
+            request = call,
             client = mockClientWithResponse(
                 responseContent,
                 HttpStatusCode.Created,
@@ -61,21 +63,23 @@ internal class HttpTest : FunSpec({
             code = 201,
             status = "Created",
             content = responseContent,
-            headers = listOf(mapOf("content-type" to "application/json"))
+            headers = listOf(mapOf("content-type" to "application/json")),
+            httpCall = call
         )
     }
 
     test("send http request, invalid delete request, return 404 Not Found") {
+        val call = HttpCall(
+            name = "name",
+            method = HttpMethod.Delete,
+            url = "http://localhost",
+            headers = emptyMap(),
+            body = ""
+        )
         val responseContent = """ { "error": "notFound" } """
 
         sendHttpRequest(
-            request = HttpCall(
-                name = "name",
-                method = HttpMethod.Delete,
-                url = "http://localhost",
-                headers = emptyMap(),
-                body = ""
-            ),
+            request = call,
             client = mockClientWithResponse(
                 responseContent,
                 HttpStatusCode.NotFound,
@@ -85,21 +89,23 @@ internal class HttpTest : FunSpec({
             code = 404,
             status = "Not Found",
             content = responseContent,
-            headers = emptyList()
+            headers = emptyList(),
+            httpCall = call
         )
     }
 
     test("send http request, invalid put request, return 500 Internal Server Error") {
+        val call = HttpCall(
+            name = "name",
+            method = HttpMethod.Put,
+            url = "http://localhost",
+            headers = emptyMap(),
+            body = ""
+        )
         val responseContent = """ { "error": "server error" } """
 
         sendHttpRequest(
-            request = HttpCall(
-                name = "name",
-                method = HttpMethod.Put,
-                url = "http://localhost",
-                headers = emptyMap(),
-                body = ""
-            ),
+            request = call,
             client = mockClientWithResponse(
                 responseContent,
                 HttpStatusCode.InternalServerError,
@@ -109,19 +115,21 @@ internal class HttpTest : FunSpec({
             code = 500,
             status = "Internal Server Error",
             content = responseContent,
-            headers = emptyList()
+            headers = emptyList(),
+            httpCall = call
         )
     }
 
     test("send http request, informational request, return 100") {
+        val call = HttpCall(
+            name = "name",
+            method = HttpMethod.Put,
+            url = "http://localhost",
+            headers = emptyMap(),
+            body = ""
+        )
         sendHttpRequest(
-            request = HttpCall(
-                name = "name",
-                method = HttpMethod.Put,
-                url = "http://localhost",
-                headers = emptyMap(),
-                body = ""
-            ),
+            request = call,
             client = mockClientWithResponse(
                 "",
                 HttpStatusCode.Continue,
@@ -131,19 +139,21 @@ internal class HttpTest : FunSpec({
             code = 100,
             status = "Continue",
             content = "",
-            headers = emptyList()
+            headers = emptyList(),
+            httpCall = call
         )
     }
 
     test("send http request, redirect request, return 307") {
+        val call = HttpCall(
+            name = "name",
+            method = HttpMethod.Put,
+            url = "http://localhost",
+            headers = emptyMap(),
+            body = ""
+        )
         sendHttpRequest(
-            request = HttpCall(
-                name = "name",
-                method = HttpMethod.Put,
-                url = "http://localhost",
-                headers = emptyMap(),
-                body = ""
-            ),
+            request = call,
             client = mockClientWithResponse(
                 "",
                 HttpStatusCode.TemporaryRedirect,
@@ -153,7 +163,8 @@ internal class HttpTest : FunSpec({
             code = 307,
             status = "Temporary Redirect",
             content = "",
-            headers = emptyList()
+            headers = emptyList(),
+            httpCall = call
         )
     }
 

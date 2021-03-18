@@ -22,7 +22,7 @@ suspend fun sendHttpRequest(request: HttpCall, client: HttpClient = HttpClient()
         if (ex !is ResponseException)
             throw HttpException("Could not complete request.", ex)
         else ex.response
-    }.run { HttpReply(status.value, status.description, readText(), headers.toListOfMap()) }
+    }.run { HttpReply(status.value, status.description, readText(), headers.toListOfMap(), request) }
 
 internal fun Headers.toListOfMap(): List<Map<String, String>> =
     this.toMap().map { mapOf(it.key to it.value.joinToString(separator = "; ")) }
