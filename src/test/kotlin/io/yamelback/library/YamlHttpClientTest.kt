@@ -9,8 +9,8 @@ import io.yamelback.library.error.HttpException
 import io.yamelback.library.error.InvalidRequestException
 import io.yamelback.library.error.YamlParserException
 
-internal class YamelbackTest : FunSpec({
-    val yamelback = Yamelback()
+internal class YamlHttpClientTest : FunSpec({
+    val yamelback = YamlHttpClient()
 
     test("make request, from file to xkcd api, return reply") {
         yamelback.makeRequest("src/test/kotlin/io/yamelback/library/file/xkcd-get-comic-1.yaml")

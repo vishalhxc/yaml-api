@@ -1,7 +1,7 @@
-package io.yamelback.library.yaml
+package io.yamelback.library
 
 import io.yamelback.library.error.YamlParserException
-import io.yamelback.library.http.model.HttpCall
+import io.yamelback.library.model.HttpCall
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -10,9 +10,9 @@ import io.yamelback.library.util.constructYamlFile
 import java.io.Reader
 import java.io.StringReader
 
-internal class YamlApiTest : FunSpec({
+internal class YamlParserTest : FunSpec({
     test("parse yaml, reader has valid yaml, return request") {
-        parseYaml(
+        parseHttpCall(
             constructYamlFile(
                 name = "request-name",
                 method = "GET",
@@ -39,7 +39,7 @@ internal class YamlApiTest : FunSpec({
     }
 
     test("parse yaml, reader has valid yaml - wrong fields, return blank request") {
-        parseYaml(StringReader("abc: 123")) shouldBe HttpCall(
+        parseHttpCall(StringReader("abc: 123")) shouldBe HttpCall(
             name = "",
             method = HttpMethod(""),
             url = "",
@@ -49,12 +49,12 @@ internal class YamlApiTest : FunSpec({
     }
 
     test("parse yaml, yaml not valid, throw yaml exception") {
-        shouldThrow<YamlParserException> { parseYaml(StringReader("Some random text and that's it.")) }
+        shouldThrow<YamlParserException> { parseHttpCall(StringReader("Some random text and that's it.")) }
             .also { it.message shouldBe "Invalid yaml file." }
     }
 
     test("parse yaml, yaml null, throw yaml exception") {
-        shouldThrow<YamlParserException> { parseYaml(Reader.nullReader()) }
+        shouldThrow<YamlParserException> { parseHttpCall(Reader.nullReader()) }
             .also { it.message shouldBe "File does not exist." }
     }
 
@@ -68,7 +68,7 @@ internal class YamlApiTest : FunSpec({
                 mapOf("custom-header" to "custom-value")
             ),
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toRequest() shouldBe HttpCall(
+        ).toHttpCall() shouldBe HttpCall(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -89,7 +89,7 @@ internal class YamlApiTest : FunSpec({
                 mapOf("custom-header" to "custom-value")
             ),
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toRequest() shouldBe HttpCall(
+        ).toHttpCall() shouldBe HttpCall(
             name = "",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -107,7 +107,7 @@ internal class YamlApiTest : FunSpec({
             "method" to "get",
             "url" to "http://localhost",
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toRequest() shouldBe HttpCall(
+        ).toHttpCall() shouldBe HttpCall(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -124,7 +124,7 @@ internal class YamlApiTest : FunSpec({
                 "url" to "http://localhost",
                 "headers" to "something-thats-not-a-map",
                 "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-            ).toRequest() shouldBe HttpCall(
+            ).toHttpCall() shouldBe HttpCall(
                 name = "request-name",
                 method = HttpMethod.Get,
                 url = "http://localhost",
@@ -142,7 +142,7 @@ internal class YamlApiTest : FunSpec({
                 mapOf("custom-header" to "custom-value")
             ),
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toRequest() shouldBe HttpCall(
+        ).toHttpCall() shouldBe HttpCall(
             name = "",
             method = HttpMethod(""),
             url = "http://localhost",
@@ -160,7 +160,7 @@ internal class YamlApiTest : FunSpec({
                 mapOf("content-type" to "application/json"),
                 mapOf("custom-header" to "custom-value")
             ),
-        ).toRequest() shouldBe HttpCall(
+        ).toHttpCall() shouldBe HttpCall(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",
@@ -178,7 +178,7 @@ internal class YamlApiTest : FunSpec({
             "method" to "get",
             "url" to "http://localhost",
             "body" to " { \"field\": \"value\", \"numeric\": 30 } "
-        ).toRequest() shouldBe HttpCall(
+        ).toHttpCall() shouldBe HttpCall(
             name = "request-name",
             method = HttpMethod.Get,
             url = "http://localhost",

@@ -1,8 +1,8 @@
-package io.yamelback.library.http
+package io.yamelback.library
 
 import io.yamelback.library.error.HttpException
-import io.yamelback.library.http.model.HttpCall
-import io.yamelback.library.http.model.HttpReply
+import io.yamelback.library.model.HttpCall
+import io.yamelback.library.model.HttpReply
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe

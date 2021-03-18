@@ -1,4 +1,4 @@
-package io.yamelback.library.http.model
+package io.yamelback.library.model
 
 import io.yamelback.library.error.InvalidRequestException
 import io.kotest.assertions.throwables.shouldNotThrowAny

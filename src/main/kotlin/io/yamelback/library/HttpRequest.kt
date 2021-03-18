@@ -1,8 +1,8 @@
-package io.yamelback.library.http
+package io.yamelback.library
 
 import io.yamelback.library.error.HttpException
-import io.yamelback.library.http.model.HttpCall
-import io.yamelback.library.http.model.HttpReply
+import io.yamelback.library.model.HttpCall
+import io.yamelback.library.model.HttpReply
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*

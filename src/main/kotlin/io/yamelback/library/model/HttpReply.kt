@@ -1,4 +1,4 @@
-package io.yamelback.library.http.model
+package io.yamelback.library.model
 
 data class HttpReply(
     val code: Int,
